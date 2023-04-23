@@ -25,7 +25,6 @@ func run(ctx context.Context) error {
 	log.Printf("start with: %v", url)
 
 	s := &http.Server{
-		Addr: ":18080",
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
 		}),
@@ -36,7 +35,7 @@ func run(ctx context.Context) error {
 
 	// TODO: errgroup.Go()を使って，別goroutineで，http.Server.ListenAndServe()を実行する
 	eg.Go(func() error {
-		if err := s.ListenAndServe(); err != nil &&
+		if err := s.Serve(l); err != nil &&
 			err != http.ErrServerClosed {
 			log.Printf("failed to close server: %v", err)
 			return err
